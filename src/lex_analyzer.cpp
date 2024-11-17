@@ -37,11 +37,10 @@ void LexicalAnalyzer::getChar() {
     } else {
         charClass = EOF_CHAR;
     }
-    //cout << "nextChar: " << nextChar << ", charClass: " << charClass << endl;
 }
 
 void LexicalAnalyzer::getNonBlank() {
-    while (isspace(nextChar))
+    while (nextChar >= 0 && nextChar <= 32)
         getChar();
 }
 
