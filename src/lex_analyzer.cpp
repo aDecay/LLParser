@@ -8,9 +8,6 @@ LexicalAnalyzer::LexicalAnalyzer(char* fname) {
         cout << "ERROR - cannot open " << fname << endl;
         exit(1);
     }
-    if (in_fp == NULL) {
-        cout << "in_fp is null" << endl;
-    }
 }
 
 void LexicalAnalyzer::parse() {
