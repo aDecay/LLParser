@@ -52,6 +52,7 @@ void LexicalAnalyzer::getNonBlank() {
 }
 
 LexicalAnalyzer::Token LexicalAnalyzer::lex() {
+    accumulatedLexeme.append(string(lexeme));
     lexLen = 0;
     getNonBlank();
 
@@ -137,4 +138,16 @@ LexicalAnalyzer::Token LexicalAnalyzer::lookup(char ch) {
 
 LexicalAnalyzer::Token LexicalAnalyzer::getNextToken() {
     return nextToken;
+}
+
+string LexicalAnalyzer::getAccumulatedLexeme() {
+    if (charClass != EOF_CHAR) {
+        accumulatedLexeme.append(string(lexeme));
+    }
+
+    return accumulatedLexeme;
+}
+
+void LexicalAnalyzer::initAccumulatedLexeme() {
+    accumulatedLexeme = "";
 }

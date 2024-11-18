@@ -39,12 +39,15 @@ void RecursiveDescentParser::statements() {
 }
 
 void RecursiveDescentParser::statement() {
+    initStmt();
+
     if (debug)
         cout << "Enter <statement>" << endl;
 
     if (analyzer->getNextToken() != LexicalAnalyzer::IDENT) {
         cout << "ERROR - ident expected" << endl;
     }
+    idCount++;
     analyzer->lex();
     if (analyzer->getNextToken() != LexicalAnalyzer::ASSIGN_OP) {
         cout << "ERROR - assign op expected" << endl;
@@ -55,6 +58,8 @@ void RecursiveDescentParser::statement() {
 
     if (debug)
         cout << "Exit <statement>" << endl;
+
+    printStmt();
 }
 
 void RecursiveDescentParser::expression() {
@@ -63,6 +68,7 @@ void RecursiveDescentParser::expression() {
 
     term();
     while (analyzer->getNextToken() == LexicalAnalyzer::ADD_OP) {
+        opCount++;
         analyzer->lex();
         term();
     }
@@ -77,6 +83,7 @@ void RecursiveDescentParser::term() {
 
     factor();
     while (analyzer->getNextToken() == LexicalAnalyzer::MULT_OP) {
+        opCount++;
         analyzer->lex();
         factor();
     }
@@ -89,9 +96,12 @@ void RecursiveDescentParser::factor() {
     if (debug)
         cout << "Enter <factor>" << endl;
 
-    if (analyzer->getNextToken() == LexicalAnalyzer::IDENT
-        || analyzer->getNextToken() == LexicalAnalyzer::CONST) {
-            analyzer->lex();
+    if (analyzer->getNextToken() == LexicalAnalyzer::IDENT) {
+        idCount++;
+        analyzer->lex();
+    } else if (analyzer->getNextToken() == LexicalAnalyzer::CONST) {
+        constCount++;
+        analyzer->lex();
     } else {
         if (analyzer->getNextToken() != LexicalAnalyzer::LEFT_PAREN) {
             cout << "ERROR - lparen expected" << endl;
@@ -108,4 +118,17 @@ void RecursiveDescentParser::factor() {
 
     if (debug)
         cout << "Exit <factor>" << endl;
+}
+
+void RecursiveDescentParser::initStmt() {
+    analyzer->initAccumulatedLexeme();
+
+    idCount = 0;
+    constCount = 0;
+    opCount = 0;
+}
+
+void RecursiveDescentParser::printStmt() {
+    cout << analyzer->getAccumulatedLexeme() << endl;
+    cout << "ID: " << idCount << "; Const: " << constCount << "; OP: " << opCount << ";" << endl;
 }

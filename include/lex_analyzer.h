@@ -2,6 +2,8 @@
 
 #include <cstdio>
 
+using namespace std;
+
 class LexicalAnalyzer {
     public:
         enum Character {
@@ -30,6 +32,7 @@ class LexicalAnalyzer {
         int lexLen;
         int token;
         Token nextToken;
+        string accumulatedLexeme;
 
         void addChar();
         void getChar();
@@ -42,4 +45,6 @@ class LexicalAnalyzer {
         Token lex();
         void parse();
         Token getNextToken();
+        string getAccumulatedLexeme();
+        void initAccumulatedLexeme();
 };
