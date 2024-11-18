@@ -38,6 +38,7 @@ class LexicalAnalyzer {
 
     public:
         LexicalAnalyzer(char* fname);
+        void ready();
         Token lex();
         void parse();
         Token getNextToken();

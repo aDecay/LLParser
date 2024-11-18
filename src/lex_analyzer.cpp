@@ -10,6 +10,11 @@ LexicalAnalyzer::LexicalAnalyzer(char* fname) {
     }
 }
 
+void LexicalAnalyzer::ready() {
+    getChar();
+    lex();
+}
+
 void LexicalAnalyzer::parse() {
     getChar();
     do {
