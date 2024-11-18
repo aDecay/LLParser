@@ -11,6 +11,7 @@ RecursiveDescentParser::RecursiveDescentParser(LexicalAnalyzer* analyzer, bool d
 void RecursiveDescentParser::parse() {
     analyzer->ready();
     program();
+    printResult();
 }
 
 void RecursiveDescentParser::program() {
@@ -47,6 +48,8 @@ void RecursiveDescentParser::statement() {
     if (analyzer->getNextToken() != LexicalAnalyzer::IDENT) {
         cout << "ERROR - ident expected" << endl;
     }
+    string id(analyzer->getLexeme());
+
     idCount++;
     analyzer->lex();
     if (analyzer->getNextToken() != LexicalAnalyzer::ASSIGN_OP) {
@@ -54,7 +57,8 @@ void RecursiveDescentParser::statement() {
         // TODO - error
     }
     analyzer->lex();
-    expression();
+    SymbolEntry result = expression();
+    symbolTable[id] = result;
 
     if (debug)
         cout << "Exit <statement>" << endl;
@@ -62,44 +66,72 @@ void RecursiveDescentParser::statement() {
     printStmt();
 }
 
-void RecursiveDescentParser::expression() {
+SymbolEntry RecursiveDescentParser::expression() {
+    SymbolEntry result;
+    
     if (debug)
         cout << "Enter <expression>" << endl;
 
-    term();
+    result = term();
     while (analyzer->getNextToken() == LexicalAnalyzer::ADD_OP) {
+        char op = analyzer->getLexeme()[0];
         opCount++;
         analyzer->lex();
-        term();
+        SymbolEntry nextTerm = term();
+        if (op == '+') {
+            result = result + nextTerm;
+        } else {
+            result = result - nextTerm;
+        }
     }
 
     if (debug)
         cout << "Exit <expression>" << endl;
+
+    return result;
 }
 
-void RecursiveDescentParser::term() {
+SymbolEntry RecursiveDescentParser::term() {
+    SymbolEntry result;
+
     if (debug)
         cout << "Enter <term>" << endl;
 
-    factor();
+    result = factor();
     while (analyzer->getNextToken() == LexicalAnalyzer::MULT_OP) {
+        char op = analyzer->getLexeme()[0];
         opCount++;
         analyzer->lex();
-        factor();
+        SymbolEntry nextFactor = factor();
+        if (op == '*') {
+            result = result * nextFactor;
+        } else {
+            result = result / nextFactor;
+        }
     }
 
     if (debug)
         cout << "Exit <term>" << endl;
+
+    return result;
 }
 
-void RecursiveDescentParser::factor() {
+SymbolEntry RecursiveDescentParser::factor() {
+    SymbolEntry result;
+
     if (debug)
         cout << "Enter <factor>" << endl;
 
     if (analyzer->getNextToken() == LexicalAnalyzer::IDENT) {
+        string lexeme = string(analyzer->getLexeme());
+        if (symbolTable.find(lexeme) == symbolTable.end()) {
+            symbolTable[lexeme] = SymbolEntry(0, true);
+        }
+        result = symbolTable[lexeme];
         idCount++;
         analyzer->lex();
     } else if (analyzer->getNextToken() == LexicalAnalyzer::CONST) {
+        result = SymbolEntry(atoi(analyzer->getLexeme()), false);
         constCount++;
         analyzer->lex();
     } else {
@@ -108,7 +140,7 @@ void RecursiveDescentParser::factor() {
             // TODO - error
         }
         analyzer->lex();
-        expression();
+        result = expression();
         if (analyzer->getNextToken() != LexicalAnalyzer::RIGHT_PAREN) {
             cout << "ERROR - rparen expected" << endl;
             // TODO - error
@@ -116,8 +148,12 @@ void RecursiveDescentParser::factor() {
         analyzer->lex();
     }
 
-    if (debug)
+    if (debug) {
         cout << "Exit <factor>" << endl;
+        cout << result.value << ", " << result.isUnknown << endl;
+    }
+    
+    return result;
 }
 
 void RecursiveDescentParser::initStmt() {
@@ -131,4 +167,18 @@ void RecursiveDescentParser::initStmt() {
 void RecursiveDescentParser::printStmt() {
     cout << analyzer->getAccumulatedLexeme() << endl;
     cout << "ID: " << idCount << "; Const: " << constCount << "; OP: " << opCount << ";" << endl;
+}
+
+void RecursiveDescentParser::printResult() {
+    cout << "Result ==> ";
+    for (auto symbol : symbolTable) {
+        cout << symbol.first << ": ";
+        if (symbol.second.isUnknown) {
+            cout << "Unknown";
+        } else {
+            cout << symbol.second.value;
+        }
+        cout << "; ";
+    }
+    cout << endl;
 }

@@ -140,6 +140,10 @@ LexicalAnalyzer::Token LexicalAnalyzer::getNextToken() {
     return nextToken;
 }
 
+char* LexicalAnalyzer::getLexeme() {
+    return lexeme;
+}
+
 string LexicalAnalyzer::getAccumulatedLexeme() {
     if (charClass != EOF_CHAR) {
         accumulatedLexeme.append(string(lexeme));

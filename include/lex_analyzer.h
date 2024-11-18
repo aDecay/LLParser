@@ -45,6 +45,7 @@ class LexicalAnalyzer {
         Token lex();
         void parse();
         Token getNextToken();
+        char* getLexeme();
         string getAccumulatedLexeme();
         void initAccumulatedLexeme();
 };
