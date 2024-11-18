@@ -5,7 +5,7 @@ using namespace std;
 
 RecursiveDescentParser::RecursiveDescentParser(LexicalAnalyzer* analyzer, bool debug) {
     this->analyzer = analyzer;
-    this->debug = false;
+    this->debug = debug;
 }
 
 void RecursiveDescentParser::parse() {
