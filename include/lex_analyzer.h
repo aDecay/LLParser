@@ -22,8 +22,8 @@ class LexicalAnalyzer {
             EOF_TOKEN
         };
     private:
+        bool debug;
         FILE* in_fp;
-
         Character charClass;
         char lexeme[100];
         char nextChar;
@@ -37,7 +37,7 @@ class LexicalAnalyzer {
         Token lookup(char ch);
 
     public:
-        LexicalAnalyzer(char* fname);
+        LexicalAnalyzer(char* fname, bool debug=false);
         void ready();
         Token lex();
         void parse();

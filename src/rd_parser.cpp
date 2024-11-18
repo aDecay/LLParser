@@ -3,8 +3,9 @@
 
 using namespace std;
 
-RecursiveDescentParser::RecursiveDescentParser(LexicalAnalyzer* analyzer) {
+RecursiveDescentParser::RecursiveDescentParser(LexicalAnalyzer* analyzer, bool debug) {
     this->analyzer = analyzer;
+    this->debug = false;
 }
 
 void RecursiveDescentParser::parse() {
@@ -13,13 +14,18 @@ void RecursiveDescentParser::parse() {
 }
 
 void RecursiveDescentParser::program() {
-    cout << "Enter <program>" << endl;
+    if (debug)
+        cout << "Enter <program>" << endl;
+    
     statements();
-    cout << "Exit <program>" << endl;
+    
+    if (debug)
+        cout << "Exit <program>" << endl;
 }
 
 void RecursiveDescentParser::statements() {
-    cout << "Enter <statements>" << endl;
+    if (debug)
+        cout << "Enter <statements>" << endl;
     
     statement();
 
@@ -28,11 +34,13 @@ void RecursiveDescentParser::statements() {
         statement();
     }
 
-    cout << "Exit <statements>" << endl;
+    if (debug)
+        cout << "Exit <statements>" << endl;
 }
 
 void RecursiveDescentParser::statement() {
-    cout << "Enter <statement>" << endl;
+    if (debug)
+        cout << "Enter <statement>" << endl;
 
     if (analyzer->getNextToken() != LexicalAnalyzer::IDENT) {
         cout << "ERROR - ident expected" << endl;
@@ -45,11 +53,13 @@ void RecursiveDescentParser::statement() {
     analyzer->lex();
     expression();
 
-    cout << "Exit <statement>" << endl;
+    if (debug)
+        cout << "Exit <statement>" << endl;
 }
 
 void RecursiveDescentParser::expression() {
-    cout << "Enter <expression>" << endl;
+    if (debug)
+        cout << "Enter <expression>" << endl;
 
     term();
     while (analyzer->getNextToken() == LexicalAnalyzer::ADD_OP) {
@@ -57,11 +67,13 @@ void RecursiveDescentParser::expression() {
         term();
     }
 
-    cout << "Exit <expression>" << endl;
+    if (debug)
+        cout << "Exit <expression>" << endl;
 }
 
 void RecursiveDescentParser::term() {
-    cout << "Enter <term>" << endl;
+    if (debug)
+        cout << "Enter <term>" << endl;
 
     factor();
     while (analyzer->getNextToken() == LexicalAnalyzer::MULT_OP) {
@@ -69,11 +81,13 @@ void RecursiveDescentParser::term() {
         factor();
     }
 
-    cout << "Exit <term>" << endl;
+    if (debug)
+        cout << "Exit <term>" << endl;
 }
 
 void RecursiveDescentParser::factor() {
-    cout << "Enter <factor>" << endl;
+    if (debug)
+        cout << "Enter <factor>" << endl;
 
     if (analyzer->getNextToken() == LexicalAnalyzer::IDENT
         || analyzer->getNextToken() == LexicalAnalyzer::CONST) {
@@ -92,5 +106,6 @@ void RecursiveDescentParser::factor() {
         analyzer->lex();
     }
 
-    cout << "Exit <factor>" << endl;
+    if (debug)
+        cout << "Exit <factor>" << endl;
 }

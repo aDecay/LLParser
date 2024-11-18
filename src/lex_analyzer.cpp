@@ -3,11 +3,13 @@
 
 using namespace std;
 
-LexicalAnalyzer::LexicalAnalyzer(char* fname) {
+LexicalAnalyzer::LexicalAnalyzer(char* fname, bool debug) {
     if ((in_fp = fopen(fname, "r")) == NULL) {
         cout << "ERROR - cannot open " << fname << endl;
         exit(1);
     }
+
+    this->debug = debug;
 }
 
 void LexicalAnalyzer::ready() {
@@ -84,7 +86,9 @@ LexicalAnalyzer::Token LexicalAnalyzer::lex() {
             lexeme[3] = 0;
             break;
     }
-    cout << "Next token is " << nextToken << ", Next lexeme is " << lexeme << endl;
+    
+    if (debug)
+        cout << "Next token is " << nextToken << ", Next lexeme is " << lexeme << endl;
 
     return nextToken;
 }

@@ -4,6 +4,7 @@
 
 class RecursiveDescentParser {
     private:
+        bool debug;
         LexicalAnalyzer* analyzer;
         void program();
         void statements();
@@ -13,6 +14,6 @@ class RecursiveDescentParser {
         void factor();
 
     public:
-        RecursiveDescentParser(LexicalAnalyzer* analyzer);
+        RecursiveDescentParser(LexicalAnalyzer* analyzer, bool debug=false);
         void parse();
 };
